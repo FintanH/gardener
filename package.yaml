@@ -15,8 +15,20 @@ dependencies:
   - aeson
   - base >= 4.7 && < 5
   - text
+  - unordered-containers
+  - yaml
 
-executables:
-  gardener:
-    source-dirs:      src
-    main:             Main.hs
+library:
+  source-dirs: src
+  dependencies:
+    lens-aeson
+
+tests:
+  hspec:
+    main: Main.hs
+    source-dirs: test
+    dependencies:
+      - bytestring
+      - gardener
+      - hspec
+      - raw-strings-qq
