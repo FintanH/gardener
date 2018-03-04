@@ -1,0 +1,22 @@
+name:                gardener
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/githubuser/gardener#readme
+license:             BSD3
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2018 Author name here
+category:            Web
+extra-source-files:
+- README.md
+
+dependencies:
+  - aeson
+  - base >= 4.7 && < 5
+  - text
+
+executables:
+  gardener:
+    source-dirs:      src
+    main:             Main.hs

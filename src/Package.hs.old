@@ -1,0 +1,68 @@
+{-# LANGUAGE DeriveGeneric #-}
+
+module Package where
+
+import  Data.Text (Text)
+import  GHC.Generics (Generic)
+import  Data.String (IsString)
+
+
+newtype Package = Package { package :: [PackageEntry] }
+  deriving (Show, Eq, Genric)
+
+data PackageEntry
+  = PackageName
+  | Section
+
+-- | "name" field under "package" object
+newtype PackageName = PackageName { packageName :: Text }
+    deriving (Show, Eq, IsString, Generic)
+
+instance FromJSON PackageName where
+    parseJSON =
+        genericParseJSON $ defaultOptions { fieldLabelModifier = stripPrefix "package" }
+
+-- "name" field under "section" object
+newtype SectionName = SectionName { sectionName :: Text }
+    deriving (Show, Eq, IsString, Generic)
+
+instance FromJSON SectionName where
+    parseJSON =
+        genericParseJSON $ defaultOptions { fieldLabelModifier = stripPrefix "section" }
+
+-- | The list of entries that appear under
+-- the "message" key in a "section" object
+data SectionMessage = SectionMessage
+    { message :: [SectionEntry] }
+
+-- | Different objects that may appear in "section".
+-- These are the name of the message and the type of weed.
+data SectionEntry =
+      Name MessageName
+    | Type WeedType
+
+newtype MessageName = MessageName { messageName :: Text }
+    deriving (Show, Eq, IsString, Generic)
+
+instance FromJSON SectionName where
+    parseJSON =
+        genericParseJSON $ defaultOptions { fieldLabelModifier = stripPrefix "message" }
+
+-- | The type of weeds that can appear.
+-- TODO: This is only the reduntant dependency case for now
+data WeedType = Redundant Depends
+   deriving (Show, Eq, IsString, Generic)
+
+-- | List of the package names
+newtype Depends = Depends { depends :: [PackageName] }
+  deriving (Show, Eq, IsString, Generic)
+
+instance FromJSON Depends
+
+newtype PackageName = PackageName Text
+  deriving (Show, Eq, IsString, Generic)
+
+instance FromJSON PackageName
+
+stripPrefix :: String -> String -> String
+stripPrefix = map toLower . drop . length
